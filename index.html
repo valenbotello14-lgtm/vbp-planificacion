@@ -1,541 +1,359 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VBP — Planificación de Alumnos</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-  :root {
-    --bg:#0F0F13;--bg2:#16161C;--bg3:#1E1E27;--border:#2A2A36;--border2:#353545;
-    --text:#E8E8F0;--text2:#9090A8;--text3:#5A5A72;
-    --orange:#FF6B2B;--orange2:#FF8C55;
-    --red:#FF4444;--redbg:#2A1515;
-    --yellow:#FFB830;--yellowbg:#252010;
-    --green:#3DDB7A;--greenbg:#0F2A1A;
-    --blue:#4A9EFF;--bluebg:#0F1F35;
-    --purple:#A855F7;--purplebg:#1A1020;
-    --radius:10px;--radius-lg:16px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
-  .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;}
-  .logo{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.5px;}
-  .logo span{color:var(--orange);}
-  .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .today-badge{font-size:12px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:20px;}
-  .gcal-btn{height:34px;padding:0 14px;border-radius:var(--radius);border:1px solid #1A3A1A;background:#0F2A0F;color:#3DDB7A;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
-  .gcal-btn:hover{background:#1A3A1A;}
-  .gcal-btn.connected{border-color:#1A3A1A;background:#0F2A0F;}
-  .gcal-btn.disconnected{border-color:var(--border);background:var(--bg3);color:var(--text2);}
-  .main{padding:28px 32px;max-width:1400px;margin:0 auto;}
-  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
-  .stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
-  .stat-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-  .stat-val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;}
-  .stat-val.red{color:var(--red);}.stat-val.yellow{color:var(--yellow);}.stat-val.green{color:var(--green);}.stat-val.gray{color:var(--text2);}.stat-val.white{color:var(--text);}
-  .toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
-  .search-wrap{flex:1;min-width:200px;position:relative;}
-  .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
-  input[type=text],input[type=date],select,textarea{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border-color .15s;}
-  input[type=text]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:var(--orange);}
-  .search-inp{width:100%;padding:8px 12px 8px 34px;height:36px;}
-  .filter-select{padding:0 10px;height:36px;cursor:pointer;}
-  .btn{height:36px;padding:0 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s;}
-  .btn:hover{background:var(--bg3);border-color:var(--border2);}
-  .btn-primary{background:var(--orange);border-color:var(--orange);color:#fff;}
-  .btn-primary:hover{background:var(--orange2);border-color:var(--orange2);}
-  .btn-danger{border-color:var(--red);color:var(--red);}
-  .btn-danger:hover{background:var(--redbg);}
-  .table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
-  table{width:100%;border-collapse:collapse;}
-  thead th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
-  tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
-  tbody tr:last-child{border-bottom:none;}
-  tbody tr:hover{background:var(--bg3);}
-  td{padding:11px 14px;vertical-align:middle;}
-  .name-cell{display:flex;align-items:center;gap:10px;}
-  .avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex-shrink:0;font-family:'Space Grotesk',sans-serif;}
-  .av0{background:#1E2A3A;color:#4A9EFF;}.av1{background:#2A1E3A;color:#A855F7;}.av2{background:#1E3A2A;color:#3DDB7A;}
-  .av3{background:#3A2A1E;color:#FF8C55;}.av4{background:#3A1E2A;color:#FF6B9D;}.av5{background:#2A3A1E;color:#B4E040;}
-  .name-text{font-weight:500;font-size:13px;}
-  .injury-tag{font-size:10px;background:#2A1015;color:var(--purple);border:1px solid #3A1A40;border-radius:4px;padding:1px 5px;margin-left:6px;}
-  .modal-tag{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;display:inline-block;}
-  .tag-online{background:var(--bluebg);color:var(--blue);border:1px solid #1A2F4A;}
-  .tag-pres{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
-  .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-  .badge-red{background:var(--redbg);color:var(--red);border:1px solid #3A2020;}
-  .badge-yellow{background:var(--yellowbg);color:var(--yellow);border:1px solid #352D10;}
-  .badge-green{background:var(--greenbg);color:var(--green);border:1px solid #1A3A2A;}
-  .badge-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
-  .badge-injury{background:var(--purplebg);color:var(--purple);border:1px solid #2A1A40;}
-  .date-text{font-size:13px;color:var(--text);}
-  .days-num{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
-  .days-num.red{color:var(--red);}.days-num.yellow{color:var(--yellow);}.days-num.green{color:var(--green);}.days-num.gray{color:var(--text3);}
-  .manual-sel{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
-  .manual-sel:focus{border-color:var(--orange);outline:none;}
-  .icon-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
-  .icon-btn:hover{background:var(--bg3);color:var(--text);}
-  .icon-btn.del:hover{background:var(--redbg);color:var(--red);border-color:var(--red);}
-  .icon-btn.cal{color:#3DDB7A;}
-  .icon-btn.cal:hover{background:var(--greenbg);border-color:#1A3A2A;}
-  .icon-btn.cal.synced{color:var(--text3);border-color:var(--border);}
-  .actions{display:flex;gap:6px;align-items:center;}
-  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px;}
-  .overlay.open{display:flex;}
-  .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
-  .modal h3{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;margin-bottom:20px;color:var(--text);}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .form-group{margin-bottom:14px;}
-  .form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.3px;}
-  .form-group input[type=text],.form-group input[type=date],.form-group select,.form-group textarea{width:100%;padding:8px 10px;border-radius:var(--radius);}
-  .form-group textarea{resize:vertical;min-height:70px;}
-  .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;}
-  .empty{text-align:center;padding:48px;color:var(--text2);font-size:13px;}
-  .empty-icon{font-size:36px;margin-bottom:12px;}
-  tr.lesion-row{border-left:3px solid var(--purple);}
-  /* TOAST */
-  .toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--text);z-index:999;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s;max-width:340px;}
-  .toast.show{transform:translateY(0);opacity:1;}
-  .toast.success{border-color:#1A3A2A;background:#0F2A1A;color:var(--green);}
-  .toast.error{border-color:#3A2020;background:var(--redbg);color:var(--red);}
-  /* CAL MODAL */
-  .cal-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:420px;}
-  .cal-modal h3{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:8px;}
-  .cal-modal p{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5;}
-  .cal-info{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2);}
-  .cal-info strong{color:var(--text);display:block;margin-bottom:4px;}
-  @media(max-width:900px){.main{padding:16px;}.header{padding:0 16px;}.stats{grid-template-columns:repeat(3,1fr);}td.hide-mobile,th.hide-mobile{display:none;}}
-  @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr);}}
-</style>
-</head>
-<body>
+VBP · Planificación
+vie, 26 jun 2026
 
-<header class="header">
-  <div class="logo">VBP <span>·</span> Planificación</div>
-  <div class="header-right">
-    <span class="today-badge" id="today-badge"></span>
-    <button class="gcal-btn disconnected" id="gcal-btn" onclick="toggleGCal()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span id="gcal-label">Conectar Calendar</span>
-    </button>
-    <button class="btn btn-primary" onclick="openModal()">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-      Nuevo alumno
-    </button>
-  </div>
-</header>
+Conectar Calendar
+Nuevo alumno
+Total
+42
+Vencidos
+0
+Última semana
+3
+Al día
+36
+Sin fecha
+1
+Buscar alumno...
 
-<main class="main">
-  <div class="stats">
-    <div class="stat"><div class="stat-label">Total</div><div class="stat-val white" id="st-total">0</div></div>
-    <div class="stat"><div class="stat-label">Vencidos</div><div class="stat-val red" id="st-venc">0</div></div>
-    <div class="stat"><div class="stat-label">Última semana</div><div class="stat-val yellow" id="st-ult">0</div></div>
-    <div class="stat"><div class="stat-label">Al día</div><div class="stat-val green" id="st-ok">0</div></div>
-    <div class="stat"><div class="stat-label">Sin fecha</div><div class="stat-val gray" id="st-sf">0</div></div>
-  </div>
-  <div class="toolbar">
-    <div class="search-wrap">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" class="search-inp" id="search" placeholder="Buscar alumno..." oninput="render()">
-    </div>
-    <select class="filter-select" id="filter-estado" onchange="render()">
-      <option value="">Todos los estados</option>
-      <option value="vencido">🔴 Vencidos</option>
-      <option value="semana">🟡 Última semana</option>
-      <option value="ok">🟢 Al día</option>
-      <option value="sinfecha">⚪ Sin fecha</option>
-    </select>
-    <select class="filter-select" id="filter-modal" onchange="render()">
-      <option value="">Presencial + Online</option>
-      <option value="Presencial">Presencial</option>
-      <option value="Online">Online</option>
-    </select>
-    <button class="btn" onclick="toggleSort()">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
-      <span id="sort-label">Por urgencia</span>
-    </button>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Alumno</th>
-          <th class="hide-mobile">Modalidad</th>
-          <th>Fecha presentación</th>
-          <th class="hide-mobile">Días restantes</th>
-          <th>Estado</th>
-          <th class="hide-mobile">Estado manual</th>
-          <th class="hide-mobile">Notas</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-</main>
+Todos los estados
 
-<!-- MODAL ALUMNO -->
-<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
-  <div class="modal">
-    <h3 id="modal-title">Nuevo alumno</h3>
-    <div class="form-row">
-      <div class="form-group"><label>Nombre</label><input type="text" id="f-nombre" placeholder="Ej: Lucas Fernández"></div>
-      <div class="form-group"><label>Modalidad</label><select id="f-modal"><option>Presencial</option><option>Online</option></select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Fecha presentación</label><input type="date" id="f-fecha"></div>
-      <div class="form-group"><label>Es lesión</label><select id="f-lesion"><option value="0">No</option><option value="1">Sí</option></select></div>
-    </div>
-    <div class="form-group"><label>Notas</label><textarea id="f-notas" placeholder="Observaciones, deporte, objetivo..."></textarea></div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveAlumno()">Guardar</button>
-    </div>
-  </div>
-</div>
+Presencial + Online
 
-<!-- MODAL CALENDAR -->
-<div class="overlay" id="cal-overlay" onclick="handleCalOverlayClick(event)">
-  <div class="cal-modal">
-    <h3>📅 Crear avisos en Google Calendar</h3>
-    <p>Se crearán <strong>2 avisos</strong> para <span id="cal-nombre-preview" style="color:var(--orange)"></span>:</p>
-    <div class="cal-info">
-      <strong>Aviso 1 — 8 días antes</strong>
-      <span id="cal-date1-preview"></span>
-    </div>
-    <div class="cal-info">
-      <strong>Aviso 2 — Sábado anterior</strong>
-      <span id="cal-date2-preview"></span>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeCalModal()">Cancelar</button>
-      <button class="btn btn-primary" id="cal-confirm-btn" onclick="confirmCreateEvents()">Crear avisos</button>
-    </div>
-  </div>
-</div>
+Por urgencia
+Alumno	Modalidad	Fecha presentación	Días restantes	Estado	Estado manual	Notas	
+AC
+Ana Chaparro
+Presencial	29 jun 2026	3d	🟡 Última semana	
+📝 Sin definir
+—	
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
 
-<script>
-const CLIENT_ID = '1051287020007-stbg627q90hgu38gq07op3jqfv1ubhsq.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 
-// ─── GOOGLE AUTH ─────────────────────────────────────────────────────
-let tokenClient = null;
-let accessToken = null;
-let pendingCalAlumno = null;
+P
+Pipe
+Presencial	29 jun 2026	3d	🟡 Última semana	
+📝 Sin definir
+—	
 
-function initGoogleAuth() {
-  if (typeof google === 'undefined') {
-    setTimeout(initGoogleAuth, 500);
-    return;
-  }
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: (resp) => {
-      if (resp.error) { showToast('Error al conectar con Google', 'error'); return; }
-      accessToken = resp.access_token;
-      updateCalBtn(true);
-      showToast('✅ Google Calendar conectado', 'success');
-      if (pendingCalAlumno) { openCalModal(pendingCalAlumno); pendingCalAlumno = null; }
-    }
-  });
-}
 
-function toggleGCal() {
-  if (accessToken) {
-    accessToken = null;
-    updateCalBtn(false);
-    showToast('Desconectado de Google Calendar', '');
-  } else {
-    tokenClient.requestAccessToken();
-  }
-}
 
-function updateCalBtn(connected) {
-  const btn = document.getElementById('gcal-btn');
-  const lbl = document.getElementById('gcal-label');
-  if (connected) {
-    btn.className = 'gcal-btn connected';
-    lbl.textContent = '✓ Calendar conectado';
-  } else {
-    btn.className = 'gcal-btn disconnected';
-    lbl.textContent = 'Conectar Calendar';
-  }
-}
+MS
+Mateo Sese
+Presencial	29 jun 2026	3d	🟡 Última semana	
+📝 Sin definir
+—	
 
-// ─── DATE UTILS ──────────────────────────────────────────────────────
-function todayStr() { return new Date().toISOString().split('T')[0]; }
-function addDays(dateStr, n) {
-  const d = new Date(dateStr + 'T00:00:00'); d.setDate(d.getDate() + n);
-  return d.toISOString().split('T')[0];
-}
-function prevSaturday(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  const day = d.getDay(); // 0=dom,6=sab
-  const diff = day === 6 ? 7 : (day + 1); // go back to previous saturday
-  d.setDate(d.getDate() - diff);
-  return d.toISOString().split('T')[0];
-}
-function diffDays(dateStr) {
-  if (!dateStr) return null;
-  const d1 = new Date(dateStr + 'T00:00:00');
-  const d2 = new Date(todayStr() + 'T00:00:00');
-  return Math.round((d1 - d2) / 86400000);
-}
-function fmtDate(d) {
-  if (!d) return '—';
-  const [y,m,day] = d.split('-');
-  const ms=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  return `${parseInt(day)} ${ms[parseInt(m)-1]} ${y}`;
-}
-function fmtDateLong(d) {
-  if (!d) return '—';
-  const dt = new Date(d + 'T00:00:00');
-  return dt.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
-}
-function getStatus(a) {
-  const d = diffDays(a.fecha);
-  if (d === null) return {key:'sinfecha', label:'⚪ Sin fecha', cls:'badge-gray'};
-  if (a.lesion)  return {key:'lesion',   label:'🟣 Lesión',      cls:'badge-injury'};
-  if (d < 0)     return {key:'vencido',  label:'🔴 Vencido',     cls:'badge-red'};
-  if (d <= 7)    return {key:'semana',   label:'🟡 Última semana',cls:'badge-yellow'};
-  return                {key:'ok',       label:'🟢 Al día',      cls:'badge-green'};
-}
 
-// ─── CALENDAR EVENTS ─────────────────────────────────────────────────
-async function createCalEvent(summary, description, dateStr, colorId) {
-  const body = {
-    summary,
-    description,
-    start: { dateTime: dateStr + 'T09:00:00', timeZone: 'America/Argentina/Buenos_Aires' },
-    end:   { dateTime: dateStr + 'T09:30:00', timeZone: 'America/Argentina/Buenos_Aires' },
-    colorId: String(colorId),
-    reminders: { useDefault: false, overrides: [{method:'popup',minutes:0},{method:'email',minutes:0}] }
-  };
-  const resp = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!resp.ok) throw new Error('Error al crear evento');
-  return resp.json();
-}
 
-async function confirmCreateEvents() {
-  const a = pendingCalAlumno;
-  if (!a || !a.fecha) return;
-  const btn = document.getElementById('cal-confirm-btn');
-  btn.disabled = true;
-  btn.textContent = 'Creando...';
-  try {
-    const date8 = addDays(a.fecha, -8);
-    const dateSat = prevSaturday(a.fecha);
-    const colorId = a.lesion ? 11 : 6;
-    const emoji = a.lesion ? '🩺' : '📋';
-    const fvence = fmtDate(a.fecha);
-    await createCalEvent(
-      `${emoji} PLANIFICACIÓN — ${a.nombre} (vence ${fvence.slice(0,6)})`,
-      `Preparar y presentar nueva planificación para ${a.nombre}. Fecha límite: ${fmtDateLong(a.fecha)}.`,
-      date8, colorId
-    );
-    await createCalEvent(
-      `${emoji} SAB — ${a.nombre} (presentás ${fvence.slice(0,6)})`,
-      `⚠️ RECORDATORIO SÁBADO — Planificación nueva para ${a.nombre}. Presentación: ${fmtDateLong(a.fecha)}.`,
-      dateSat, colorId
-    );
-    // Mark as synced
-    alumnos = alumnos.map(x => x.id === a.id ? {...x, calSynced: a.fecha} : x);
-    save();
-    closeCalModal();
-    showToast(`✅ 2 avisos creados para ${a.nombre}`, 'success');
-    render();
-  } catch(e) {
-    showToast('Error al crear eventos. Reconectá Calendar.', 'error');
-    accessToken = null; updateCalBtn(false);
-  }
-  btn.disabled = false;
-  btn.textContent = 'Crear avisos';
-  pendingCalAlumno = null;
-}
+MB
+Maxi BarrionuevoLESIÓN
+Presencial	29 jun 2026	3d	🟣 Lesión	
+📝 Sin definir
+Esguince tobillo GI/II — progresión de lesión	
 
-function requestCalendar(id) {
-  const a = alumnos.find(x => x.id === id);
-  if (!a) return;
-  if (!a.fecha) { showToast('Este alumno no tiene fecha de presentación', 'error'); return; }
-  pendingCalAlumno = a;
-  if (!accessToken) { tokenClient.requestAccessToken(); return; }
-  openCalModal(a);
-}
 
-function openCalModal(a) {
-  pendingCalAlumno = a;
-  document.getElementById('cal-nombre-preview').textContent = a.nombre;
-  document.getElementById('cal-date1-preview').textContent  = fmtDateLong(addDays(a.fecha, -8));
-  document.getElementById('cal-date2-preview').textContent  = fmtDateLong(prevSaturday(a.fecha));
-  document.getElementById('cal-overlay').classList.add('open');
-}
-function closeCalModal() {
-  document.getElementById('cal-overlay').classList.remove('open');
-  pendingCalAlumno = null;
-}
-function handleCalOverlayClick(e) { if (e.target.id === 'cal-overlay') closeCalModal(); }
 
-// ─── DATA ────────────────────────────────────────────────────────────
-const DEFAULT = [
-  {id:1,  nombre:"Simon Herrera",        modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:2,  nombre:"Ivan Casco",           modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:3,  nombre:"Romi Guastoni",        modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:4,  nombre:"Martin Pereyra",       modal:"Online",    fecha:"",          manual:"📝 Sin definir",notas:"Lesión cuádriceps — en recuperación",lesion:1},
-  {id:5,  nombre:"Martina Stepanovitch", modal:"Presencial",fecha:"2026-06-22",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:6,  nombre:"Ana Chaparro",         modal:"Presencial",fecha:"2026-06-29",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:7,  nombre:"Pipe",                 modal:"Presencial",fecha:"2026-06-29",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:8,  nombre:"Guillermo Guerrero",   modal:"Presencial",fecha:"2026-07-13",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:9,  nombre:"Mateo Sese",           modal:"Presencial",fecha:"2026-06-29",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:10, nombre:"Cata Amador Paz",      modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:11, nombre:"Dani Dovico",          modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:12, nombre:"Dante Giraudo",        modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:13, nombre:"Fran Rio",             modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:14, nombre:"Jeronimo Gaona",       modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:15, nombre:"Juan Cruz Bertuol",    modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:16, nombre:"Juampi Rio",           modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:17, nombre:"Matias Rognoni",       modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:18, nombre:"Lucia Rognoni",        modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:19, nombre:"Marcos Toffoletti",    modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:20, nombre:"Mariano Bonadio",      modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:21, nombre:"Mateo Benedetti",      modal:"Presencial",fecha:"2026-07-13",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:22, nombre:"Agustina Sag",         modal:"Presencial",fecha:"2026-07-13",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:23, nombre:"Belizan",              modal:"Presencial",fecha:"2026-07-13",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:24, nombre:"Natalia",              modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:25, nombre:"Nicolas Machado",      modal:"Presencial",fecha:"2026-07-20",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:26, nombre:"Nicolas Rojas",        modal:"Presencial",fecha:"2026-07-27",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:27, nombre:"Thomas Coldeira",      modal:"Online",    fecha:"2026-07-20",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:28, nombre:"Tomas Rebour",         modal:"Presencial",fecha:"2026-07-20",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:29, nombre:"Valentin Vandam",      modal:"Presencial",fecha:"2026-07-27",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:30, nombre:"Mateo Euge",           modal:"Presencial",fecha:"2026-07-27",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:31, nombre:"Juan Gaona",           modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:32, nombre:"Ramon Herrera",        modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:33, nombre:"Giuliana Chadud",      modal:"Presencial",fecha:"2026-08-03",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:34, nombre:"Celeste Gonzalez",     modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:35, nombre:"Lucas Benitez",        modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:36, nombre:"Agustina Suriano",     modal:"Presencial",fecha:"2026-07-20",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:37, nombre:"Maxi Barrionuevo",     modal:"Presencial",fecha:"2026-06-29",manual:"📝 Sin definir",notas:"Esguince tobillo GI/II — progresión",lesion:1},
-  {id:38, nombre:"Gianluca Cafferatta",  modal:"Presencial",fecha:"2026-07-27",manual:"📝 Sin definir",notas:"",lesion:0},
-  {id:39, nombre:"Lionel Cardozo",       modal:"Presencial",fecha:"2026-06-16",manual:"📝 Sin definir",notas:"Alumno nuevo",lesion:0},
-  {id:40, nombre:"Tomas Crestani",       modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"Duplicar rutina",lesion:0},
-  {id:41, nombre:"Brisa Corbo",          modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"Duplicar rutina",lesion:0},
-  {id:42, nombre:"Alejo Saettone",       modal:"Presencial",fecha:"2026-07-06",manual:"📝 Sin definir",notas:"Tobillo Fase II — progresión",lesion:1},
-];
+LC
+Lionel Cardozo
+Presencial	5 jul 2026	9d	🟢 Al día	
+📝 Sin definir
+Alumno nuevo	
 
-let alumnos=[], nextId=200, editId=null, sortByUrgency=true;
 
-function load() {
-  try {
-    const s = localStorage.getItem('vbp_alumnos');
-    if (s) { alumnos = JSON.parse(s); nextId = Math.max(...alumnos.map(a=>a.id)) + 1; }
-    else { alumnos = DEFAULT.map(a=>({...a})); }
-  } catch(e) { alumnos = DEFAULT.map(a=>({...a})); }
-}
-function save() { try { localStorage.setItem('vbp_alumnos', JSON.stringify(alumnos)); } catch(e){} }
 
-// ─── RENDER ──────────────────────────────────────────────────────────
-function initials(n) { return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-function avColor(n)  { return (n.charCodeAt(0)+(n.charCodeAt(n.length-1)||0))%6; }
+CA
+Cata Amador Paz
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
 
-function updateStats() {
-  document.getElementById('st-total').textContent = alumnos.length;
-  document.getElementById('st-venc').textContent  = alumnos.filter(a=>{const d=diffDays(a.fecha);return d!==null&&d<0&&!a.lesion;}).length;
-  document.getElementById('st-ult').textContent   = alumnos.filter(a=>{const d=diffDays(a.fecha);return d!==null&&d>=0&&d<=7&&!a.lesion;}).length;
-  document.getElementById('st-ok').textContent    = alumnos.filter(a=>{const d=diffDays(a.fecha);return d!==null&&d>7&&!a.lesion;}).length;
-  document.getElementById('st-sf').textContent    = alumnos.filter(a=>!a.fecha).length;
-}
 
-function render() {
-  const q  = document.getElementById('search').value.toLowerCase();
-  const fe = document.getElementById('filter-estado').value;
-  const fm = document.getElementById('filter-modal').value;
-  let list = alumnos.filter(a => {
-    if (q && !a.nombre.toLowerCase().includes(q)) return false;
-    if (fm && a.modal !== fm) return false;
-    if (fe) { const st=getStatus(a); if(fe==='vencido'&&st.key!=='vencido')return false; if(fe==='semana'&&st.key!=='semana')return false; if(fe==='ok'&&st.key!=='ok')return false; if(fe==='sinfecha'&&st.key!=='sinfecha')return false; }
-    return true;
-  });
-  if (sortByUrgency) list.sort((a,b)=>(diffDays(a.fecha)??9999)-(diffDays(b.fecha)??9999));
-  updateStats();
-  const tbody = document.getElementById('tbody');
-  if (!list.length) { tbody.innerHTML=`<tr><td colspan="8" class="empty"><div class="empty-icon">🏋️</div>No hay alumnos que coincidan</td></tr>`; return; }
-  tbody.innerHTML = list.map(a => {
-    const st = getStatus(a);
-    const d  = diffDays(a.fecha);
-    const daysColor = d===null?'gray':d<0?'red':d<=7?'yellow':'green';
-    const daysText  = d===null?'—':d<0?`${Math.abs(d)}d pasado`:`${d}d`;
-    const synced = a.calSynced && a.calSynced === a.fecha;
-    return `<tr class="${a.lesion?'lesion-row':''}">
-      <td><div class="name-cell"><div class="avatar av${avColor(a.nombre)}">${initials(a.nombre)}</div><div><span class="name-text">${a.nombre}${a.lesion?'<span class="injury-tag">LESIÓN</span>':''}</span></div></div></td>
-      <td class="hide-mobile"><span class="modal-tag ${a.modal==='Online'?'tag-online':'tag-pres'}">${a.modal}</span></td>
-      <td><span class="date-text">${fmtDate(a.fecha)}</span></td>
-      <td class="hide-mobile"><span class="days-num ${daysColor}">${daysText}</span></td>
-      <td><span class="badge ${st.cls}">${st.label}</span></td>
-      <td class="hide-mobile"><select class="manual-sel" onchange="updateManual(${a.id},this.value)">${['📝 Sin definir','✅ Entregado','⏳ En proceso','❌ Pendiente'].map(op=>`<option${a.manual===op?' selected':''}>${op}</option>`).join('')}</select></td>
-      <td class="hide-mobile" style="max-width:160px;color:var(--text2);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.notas||''}">${a.notas||'<span style="color:var(--text3)">—</span>'}</td>
-      <td><div class="actions">
-        <button class="icon-btn cal${synced?' synced':''}" title="${synced?'Avisos ya creados':'Crear avisos en Calendar'}" onclick="requestCalendar(${a.id})">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </button>
-        <button class="icon-btn" title="Editar" onclick="openModal(${a.id})">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button class="icon-btn del" title="Eliminar" onclick="deleteAlumno(${a.id})">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-        </button>
-      </div></td>
-    </tr>`;
-  }).join('');
-}
 
-// ─── ACTIONS ─────────────────────────────────────────────────────────
-function updateManual(id,val) { alumnos=alumnos.map(a=>a.id===id?{...a,manual:val}:a); save(); }
-function deleteAlumno(id) { const a=alumnos.find(x=>x.id===id); if(!a||!confirm(`¿Eliminar a ${a.nombre}?`))return; alumnos=alumnos.filter(x=>x.id!==id); save(); render(); }
-function toggleSort() { sortByUrgency=!sortByUrgency; document.getElementById('sort-label').textContent=sortByUrgency?'Por urgencia':'Orden original'; render(); }
+DD
+Dani Dovico
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
 
-// ─── MODAL ───────────────────────────────────────────────────────────
-function openModal(id=null) {
-  editId=id;
-  document.getElementById('modal-title').textContent=id?'Editar alumno':'Nuevo alumno';
-  if(id){const a=alumnos.find(x=>x.id===id);document.getElementById('f-nombre').value=a.nombre;document.getElementById('f-modal').value=a.modal;document.getElementById('f-fecha').value=a.fecha||'';document.getElementById('f-lesion').value=a.lesion?'1':'0';document.getElementById('f-notas').value=a.notas||'';}
-  else{document.getElementById('f-nombre').value='';document.getElementById('f-modal').value='Presencial';document.getElementById('f-fecha').value='';document.getElementById('f-lesion').value='0';document.getElementById('f-notas').value='';}
-  document.getElementById('overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('f-nombre').focus(),100);
-}
-function closeModal() { document.getElementById('overlay').classList.remove('open'); editId=null; }
-function handleOverlayClick(e) { if(e.target.id==='overlay')closeModal(); }
-function saveAlumno() {
-  const nombre=document.getElementById('f-nombre').value.trim();
-  if(!nombre){alert('Ingresá el nombre');return;}
-  const obj={nombre,modal:document.getElementById('f-modal').value,fecha:document.getElementById('f-fecha').value||'',lesion:parseInt(document.getElementById('f-lesion').value),notas:document.getElementById('f-notas').value.trim()};
-  if(editId){alumnos=alumnos.map(a=>a.id===editId?{...a,...obj,calSynced:a.fecha!==obj.fecha?null:a.calSynced}:a);}
-  else{alumnos.push({id:nextId++,manual:'📝 Sin definir',calSynced:null,...obj});}
-  save(); closeModal(); render();
-}
 
-// ─── TOAST ───────────────────────────────────────────────────────────
-let toastTimer=null;
-function showToast(msg,type='') {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast '+(type||'');
-  setTimeout(()=>t.classList.add('show'),10);
-  if(toastTimer)clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
-}
 
-// ─── INIT ─────────────────────────────────────────────────────────────
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeCalModal();}});
-document.getElementById('today-badge').textContent=new Date().toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-load(); render(); initGoogleAuth();
-</script>
-</body>
-</html>
+DG
+Dante Giraudo
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+FR
+Fran Rio
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+JG
+Jeronimo Gaona
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+JC
+Juan Cruz Bertuol
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+JR
+Juampi Rio
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+MR
+Matias Rognoni
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+LR
+Lucia Rognoni
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+MT
+Marcos Toffoletti
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+CG
+Celeste Gonzalez
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+LB
+Lucas Benitez
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+TC
+Tomas Crestani
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+Duplicar rutina	
+
+
+
+BC
+Brisa Corbo
+Presencial	6 jul 2026	10d	🟢 Al día	
+📝 Sin definir
+Duplicar rutina	
+
+
+
+AS
+Alejo SaettoneLESIÓN
+Presencial	6 jul 2026	10d	🟣 Lesión	
+📝 Sin definir
+Tobillo Fase II — progresión	
+
+
+
+MS
+Martina Stepanovitch
+Presencial	13 jul 2026	17d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+GG
+Guillermo Guerrero
+Presencial	13 jul 2026	17d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+MB
+Mateo Benedetti
+Presencial	13 jul 2026	17d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+AS
+Agustina Sag
+Presencial	13 jul 2026	17d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+B
+Belizan
+Presencial	13 jul 2026	17d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+NM
+Nicolas Machado
+Presencial	20 jul 2026	24d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+TC
+Thomas Coldeira
+Online	20 jul 2026	24d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+TR
+Tomas Rebour
+Presencial	20 jul 2026	24d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+AS
+Agustina Suriano
+Presencial	20 jul 2026	24d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+NR
+Nicolas Rojas
+Presencial	27 jul 2026	31d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+VV
+Valentin Vandam
+Presencial	27 jul 2026	31d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+ME
+Mateo Euge
+Presencial	27 jul 2026	31d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+GC
+Gianluca Cafferatta
+Presencial	27 jul 2026	31d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+SH
+Simon Herrera
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+IC
+Ivan Casco
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+RG
+Romi Guastoni
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+MB
+Mariano Bonadio
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+N
+Natalia
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+JG
+Juan Gaona
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+RH
+Ramon Herrera
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+GC
+Giuliana Chadud
+Presencial	3 ago 2026	38d	🟢 Al día	
+📝 Sin definir
+—	
+
+
+
+MP
+Martin PereyraLESIÓN
+Online	—	—	⚪ Sin fecha	
+📝 Sin definir
+Lesión cuádriceps — en recuperación	
+
+
+
