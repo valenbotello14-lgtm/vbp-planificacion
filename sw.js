@@ -1,14 +1,15 @@
 // Service worker for the VBP Athletes app shell.
 // Keeps the app installable and lets it open offline; live data (Supabase,
 // Google Calendar, fonts) always goes straight to the network untouched.
-const CACHE_NAME = 'vbp-shell-v1';
+const CACHE_NAME = 'vbp-shell-v2';
 const SHELL_ASSETS = [
   './',
   './index.html',
-  './manifest.webmanifest',
+  './manifest.webmanifest?v=2',
   './logo.png',
-  './icon-192.png',
-  './icon-512.png',
+  './icon-192.png?v=2',
+  './icon-512.png?v=2',
+  './apple-touch-icon.png?v=2',
 ];
 
 self.addEventListener('install', (event) => {
