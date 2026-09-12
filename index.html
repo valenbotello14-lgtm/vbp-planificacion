@@ -3,160 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VBP Athletes — Planificación</title>
+<title>Valen Botello — Planificación</title>
+<link rel="icon" href="logo.png">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 :root {
-  --bg:       #0A0E14;
-  --bg2:      #11151D;
-  --bg3:      #1A202C;
-  --border:   #2A3140;
-  --border2:  #3A4456;
-  --text:     #E8ECF2;
-  --text2:    #8B95A8;
-  --text3:    #525A6B;
-  --blue:     #3B82F6;
-  --blue2:    #60A5FA;
-  --red:      #EF4444;
-  --redbg:    #2A1414;
-  --yellow:   #EAB308;
-  --yellowbg: #2A2410;
-  --green:    #22C55E;
-  --greenbg:  #122A1A;
-  --purple:   #A78BFA;
-  --purplebg: #1F1A2E;
+  --bg:       #000000;
+  --panel:    #0A0B0D;
+  --surface:  #101215;
+  --surface2: #16181C;
+  --surface3: #1D2024;
+  --border:   #212428;
+  --border2:  #2E3237;
   --white:    #FFFFFF;
-  --radius:   10px;
-  --radius-lg:16px;
+  --ink:      #EDEEF0;
+  --ink2:     #A3A9B0;
+  --ink3:     #6B7178;
+  --ink4:     #35393E;
+  --steel:    #9AA0A6;
+  --navy:     #123055;
+  --blue:     #0049A8;
+  --blue2:    #2E7AD1;
+  --blue-ink: #0A1E38;
+  --red:      #E2493C; --red-soft:#2A1613;
+  --yellow:   #E0A23D; --yellowbg:#2A2210;
+  --green:    #3FAE6A; --greenbg:#0F2A1B;
+  --purple:   #8C7FE0; --purplebg:#1E1B34;
+  --radius:   8px;
+  --radius-lg:14px;
+  --font-display:'Big Shoulders Display',sans-serif;
+  --font-body:'Hanken Grotesk',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:10px;}
-.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif;}
-.logo-text{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.3px;}
-.logo-sub{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
-.header-right{display:flex;align-items:center;gap:10px;}
-.today-badge{font-size:12px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:4px 10px;border-radius:20px;}
-.btn-header{height:34px;padding:0 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;}
-.btn-header:hover{background:var(--border);color:var(--text);}
-.btn-header.connected{background:var(--greenbg);border-color:#1A3A2A;color:var(--green);}
-.btn-header-white{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:600;}
-.btn-header-white:hover{background:var(--blue2);border-color:var(--blue2);}
-.main{padding:28px 32px;max-width:1400px;margin:0 auto;}
+html,body{background:var(--bg);}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased;}
+::selection{background:var(--blue2);color:#04101E;}
+
+.hero{position:relative;overflow:hidden;background:
+    radial-gradient(480px 420px at 8% 20%, rgba(0,73,168,.20), transparent 65%),
+    radial-gradient(600px 300px at 95% -10%, rgba(18,48,85,.35), transparent 60%),
+    var(--bg);
+  border-bottom:1px solid var(--border);}
+.hero-inner{position:relative;max-width:1400px;margin:0 auto;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;}
+.brand img{height:76px;width:auto;display:block;filter:drop-shadow(0 0 22px rgba(0,73,168,.30));}
+.header-right{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.today-badge{font-family:var(--font-mono);font-size:11px;color:var(--ink2);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);padding:7px 11px;border-radius:20px;}
+.btn-header{height:36px;padding:0 14px;border-radius:20px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);color:var(--ink2);font-family:var(--font-body);font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap;}
+.btn-header:hover{background:rgba(255,255,255,.09);color:var(--white);}
+.btn-header.connected{background:var(--greenbg);border-color:#1C4430;color:var(--green);}
+.btn-header-white{background:var(--blue2);color:#fff;border-color:var(--blue2);font-weight:700;box-shadow:0 4px 18px -4px rgba(46,122,209,.55);}
+.btn-header-white:hover{background:#4A8CDD;border-color:#4A8CDD;}
+
+.main{padding:28px 32px 48px;max-width:1400px;margin:0 auto;}
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
-.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
-.stat-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-.stat-val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;}
-.stat-val.red{color:var(--red);} .stat-val.yellow{color:var(--yellow);} .stat-val.green{color:var(--green);} .stat-val.gray{color:var(--text2);} .stat-val.white{color:var(--text);} .stat-val.blue{color:var(--blue2);}
+.stat{position:relative;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--stat-c,var(--ink4));border-radius:var(--radius);padding:16px 18px 14px;overflow:hidden;}
+.stat::before{content:'';position:absolute;width:70px;height:70px;border-radius:50%;background:var(--stat-c,transparent);opacity:.15;filter:blur(20px);top:-20px;right:-20px;}
+.stat-label{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;font-weight:600;position:relative;}
+.stat-val{font-family:var(--font-display);font-size:34px;font-weight:800;position:relative;font-variant-numeric:tabular-nums;}
+.stat-val.red{color:var(--red);} .stat-val.yellow{color:var(--yellow);} .stat-val.green{color:var(--green);} .stat-val.gray{color:var(--ink3);} .stat-val.white{color:var(--white);} .stat-val.blue{color:var(--blue2);}
+.stat.c-red{--stat-c:var(--red);} .stat.c-yellow{--stat-c:var(--yellow);} .stat.c-green{--stat-c:var(--green);} .stat.c-gray{--stat-c:var(--ink3);} .stat.c-blue{--stat-c:var(--blue2);}
+
 .toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
 .search-wrap{flex:1;min-width:200px;position:relative;}
-.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
-input[type=text],input[type=date],select,textarea{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border-color .15s;}
-input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.15);}
-.search-inp{width:100%;padding:8px 12px 8px 34px;height:36px;}
-.filter-select{padding:0 10px;height:36px;cursor:pointer;}
-.btn{height:36px;padding:0 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s;}
-.btn:hover{background:var(--bg3);border-color:var(--border2);}
-.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff;}
-.btn-primary:hover{background:var(--blue2);border-color:var(--blue2);}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none;}
+input[type=text],input[type=date],select,textarea{background:var(--surface2);border:1px solid var(--border);color:var(--ink);border-radius:var(--radius);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue2);box-shadow:0 0 0 3px var(--blue-ink);}
+.search-inp{width:100%;padding:9px 12px 9px 34px;height:38px;}
+.filter-select{padding:0 10px;height:38px;cursor:pointer;}
+.btn{height:38px;padding:0 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s;}
+.btn:hover{background:var(--surface3);border-color:var(--border2);}
+.btn-primary{background:var(--blue2);border-color:var(--blue2);color:#fff;}
+.btn-primary:hover{background:#4A8CDD;border-color:#4A8CDD;}
 .btn-danger{border-color:var(--red);color:var(--red);}
-.btn-danger:hover{background:var(--redbg);}
-.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.btn-danger:hover{background:var(--red-soft);}
+
+.table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
-thead th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
+thead th{background:var(--surface2);padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);white-space:nowrap;}
 tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--bg3);}
-td{padding:11px 14px;vertical-align:middle;}
-.name-cell{display:flex;align-items:center;gap:10px;}
-.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex-shrink:0;font-family:'Space Grotesk',sans-serif;}
-.av0{background:#1E3A5F;color:#60A5FA;} .av1{background:#2A2A3A;color:#A78BFA;} .av2{background:#1A2A2A;color:#5EEAD4;}
-.av3{background:#2A2A1A;color:#FCD34D;} .av4{background:#2A1A2A;color:#F472B6;} .av5{background:#1A2A1A;color:#86EFAC;}
-.name-text{font-weight:500;font-size:13px;}
-.injury-tag{font-size:10px;background:var(--purplebg);color:var(--purple);border:1px solid #2A2050;border-radius:4px;padding:1px 5px;margin-left:6px;}
+tbody tr:hover{background:var(--surface2);}
+td{padding:0;vertical-align:middle;}
+td>.cell{padding:13px 16px;}
+tr.rowline td:first-child .cell{border-left:3px solid var(--stripe,var(--ink4));padding-left:13px;}
+.name-text{font-weight:700;font-size:14px;color:var(--white);}
+.athlete-note{font-size:11.5px;color:var(--ink3);margin-top:3px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.injury-tag{font-size:10px;background:var(--purplebg);color:var(--purple);border:1px solid #2E2A50;border-radius:4px;padding:1px 5px;margin-left:6px;font-weight:600;}
 .modal-tag{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;display:inline-block;}
-.tag-online{background:#1A2A45;color:var(--blue2);border:1px solid #25395A;}
-.tag-pres{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
-.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-.badge-red{background:var(--redbg);color:var(--red);border:1px solid #3A2020;}
-.badge-yellow{background:var(--yellowbg);color:var(--yellow);border:1px solid #352D10;}
-.badge-green{background:var(--greenbg);color:var(--green);border:1px solid #1A3A2A;}
-.badge-gray{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
-.badge-injury{background:var(--purplebg);color:var(--purple);border:1px solid #2A1A40;}
-.date-text{font-size:13px;color:var(--text);}
-.days-num{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
-.days-num.red{color:var(--red);} .days-num.yellow{color:var(--yellow);} .days-num.green{color:var(--green);} .days-num.gray{color:var(--text3);}
-.manual-sel{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
-.manual-sel:focus{border-color:var(--blue);outline:none;}
-.icon-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
-.icon-btn:hover{background:var(--bg3);color:var(--text);}
-.icon-btn.del:hover{background:var(--redbg);color:var(--red);border-color:var(--red);}
+.tag-online{background:var(--blue-ink);color:var(--blue2);border:1px solid #1D3D63;}
+.tag-pres{background:var(--surface3);color:var(--ink2);border:1px solid var(--border);}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.03em;padding:4px 10px;border-radius:6px;white-space:nowrap;text-transform:uppercase;}
+.badge .sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.badge-red{background:var(--red-soft);color:var(--red);}
+.badge-yellow{background:var(--yellowbg);color:var(--yellow);}
+.badge-green{background:var(--greenbg);color:var(--green);}
+.badge-gray{background:var(--surface3);color:var(--ink3);}
+.badge-injury{background:var(--purplebg);color:var(--purple);}
+.date-text{font-family:var(--font-mono);font-size:12.5px;color:var(--ink);}
+.urgency{display:flex;align-items:center;gap:10px;}
+.utrack{position:relative;width:72px;height:6px;border-radius:4px;background:var(--surface3);flex-shrink:0;}
+.utrack::after{content:'';position:absolute;left:23.3%;top:-2px;bottom:-2px;width:1px;background:var(--ink4);}
+.ufill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;}
+.ufill.red{background:linear-gradient(90deg,#7A2A22,var(--red));}
+.ufill.yellow{background:linear-gradient(90deg,#7A5A1A,var(--yellow));}
+.ufill.green{background:linear-gradient(90deg,#1E5C3C,var(--green));}
+.utrack.empty{background:repeating-linear-gradient(135deg,var(--border2) 0 3px,transparent 3px 6px);}
+.days-num{font-family:var(--font-mono);font-size:11.5px;color:var(--ink2);min-width:34px;}
+.manual-sel{background:var(--surface2);border:1px solid var(--border);color:var(--ink2);padding:5px 8px;border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font-body);}
+.manual-sel:focus{border-color:var(--blue2);outline:none;}
+.icon-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;}
+.icon-btn:hover{background:var(--surface3);color:var(--ink);}
+.icon-btn.del:hover{background:var(--red-soft);color:var(--red);border-color:#4A2622;}
 .icon-btn.cal{color:var(--blue2);}
-.icon-btn.cal:hover{background:#1A2A45;border-color:#25395A;}
-.icon-btn.cal.synced{color:var(--text3);border-color:var(--border);}
+.icon-btn.cal:hover{background:var(--blue-ink);border-color:#1D3D63;}
+.icon-btn.cal.synced{color:var(--ink3);border-color:var(--border);}
 .actions{display:flex;gap:6px;align-items:center;}
-.overlay{display:none;position:fixed;inset:0;background:rgba(10,14,20,0.75);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:200;align-items:center;justify-content:center;padding:20px;}
 .overlay.open{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
-.modal h3{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;margin-bottom:20px;color:var(--text);}
+.modal{background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
+.modal h3{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:.01em;margin-bottom:20px;color:var(--white);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .form-group{margin-bottom:14px;}
-.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.3px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 10px;border-radius:var(--radius);}
+.form-group label{display:block;font-size:12px;color:var(--ink2);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 10px;border-radius:var(--radius);}
 .form-group textarea{resize:vertical;min-height:70px;}
 .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;}
-.empty{text-align:center;padding:48px;color:var(--text2);font-size:13px;}
+.empty{text-align:center;padding:48px;color:var(--ink3);font-size:13px;}
 .empty-icon{font-size:36px;margin-bottom:12px;}
-tr.lesion-row{border-left:3px solid var(--purple);}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--text);z-index:999;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s;max-width:340px;}
+.cal-info{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:16px;font-size:12px;color:var(--ink2);}
+.cal-info strong{color:var(--ink);display:block;margin-bottom:4px;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--ink);z-index:999;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s;max-width:340px;}
 .toast.show{transform:translateY(0);opacity:1;}
-.toast.success{border-color:#1A3A2A;background:var(--greenbg);color:var(--green);}
-.toast.error{border-color:#3A2020;background:var(--redbg);color:var(--red);}
-.cal-info{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2);}
-.cal-info strong{color:var(--text);display:block;margin-bottom:4px;}
-@media(max-width:900px){.main{padding:16px;}.header{padding:0 16px;}.stats{grid-template-columns:repeat(3,1fr);}td.hide-mobile,th.hide-mobile{display:none;}}
-@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr);}}
+.toast.success{border-color:#1C4430;background:var(--greenbg);color:var(--green);}
+.toast.error{border-color:#4A2622;background:var(--red-soft);color:var(--red);}
+@media(max-width:900px){.main{padding:18px 16px 40px;}.hero-inner{padding:18px 16px;}.brand img{height:58px;}.stats{grid-template-columns:repeat(3,1fr);}td.hide-mobile,th.hide-mobile{display:none;}}
+@media(max-width:600px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+  thead th{white-space:normal;font-size:10px;padding:9px 10px;}
+  td>.cell{padding:10px 10px;}
+  .name-text{font-size:13px;}
+  .athlete-note{max-width:140px;}
+  .icon-btn{width:27px;height:27px;}
+  .actions{gap:3px;}
+  .badge{font-size:10.5px;padding:3px 8px;}
+}
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="logo">
-    <div class="logo-icon">VB</div>
-    <div>
-      <div class="logo-text">VBP Athletes</div>
-      <div class="logo-sub">Planificación</div>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="brand">
+      <img src="logo.png" alt="Valen Botello — Athletic Performance">
     </div>
-  </div>
-  <div class="header-right">
-    <span class="today-badge" id="today-badge"></span>
-    <button class="btn-header" onclick="exportData()" title="Descargar copia de seguridad">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    </button>
-    <button class="btn-header" onclick="document.getElementById('import-file').click()" title="Restaurar copia de seguridad">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    </button>
-    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
-    <button class="btn-header" id="gcal-btn" onclick="toggleGCal()">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span id="gcal-label">Conectar Calendar</span>
-    </button>
-    <button class="btn-header btn-header-white" onclick="openModal()">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-      Nuevo alumno
-    </button>
+    <div class="header-right">
+      <span class="today-badge" id="today-badge"></span>
+      <button class="btn-header" onclick="exportData()" title="Descargar copia de seguridad">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="btn-header" onclick="document.getElementById('import-file').click()" title="Restaurar copia de seguridad">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="btn-header" id="gcal-btn" onclick="toggleGCal()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="gcal-label">Conectar Calendar</span>
+      </button>
+      <button class="btn-header btn-header-white" onclick="openModal()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Nuevo alumno
+      </button>
+    </div>
   </div>
 </header>
 
 <main class="main">
   <div class="stats">
-    <div class="stat"><div class="stat-label">Total</div><div class="stat-val white" id="st-total">0</div></div>
-    <div class="stat"><div class="stat-label">Vencidos</div><div class="stat-val red" id="st-venc">0</div></div>
-    <div class="stat"><div class="stat-label">Última semana</div><div class="stat-val yellow" id="st-ult">0</div></div>
-    <div class="stat"><div class="stat-label">Al día</div><div class="stat-val green" id="st-ok">0</div></div>
-    <div class="stat"><div class="stat-label">Sin fecha</div><div class="stat-val gray" id="st-sf">0</div></div>
+    <div class="stat c-blue"><div class="stat-label">Total</div><div class="stat-val white" id="st-total">0</div></div>
+    <div class="stat c-red"><div class="stat-label">Vencidos</div><div class="stat-val red" id="st-venc">0</div></div>
+    <div class="stat c-yellow"><div class="stat-label">Última semana</div><div class="stat-val yellow" id="st-ult">0</div></div>
+    <div class="stat c-green"><div class="stat-label">Al día</div><div class="stat-val green" id="st-ok">0</div></div>
+    <div class="stat c-gray"><div class="stat-label">Sin fecha</div><div class="stat-val gray" id="st-sf">0</div></div>
   </div>
   <div class="toolbar">
     <div class="search-wrap">
@@ -187,10 +218,9 @@ tr.lesion-row{border-left:3px solid var(--purple);}
           <th>Alumno</th>
           <th class="hide-mobile">Modalidad</th>
           <th>Fecha presentación</th>
-          <th class="hide-mobile">Días restantes</th>
+          <th class="hide-mobile">Urgencia</th>
           <th>Estado</th>
           <th class="hide-mobile">Estado manual</th>
-          <th class="hide-mobile">Notas</th>
           <th></th>
         </tr>
       </thead>
@@ -220,8 +250,8 @@ tr.lesion-row{border-left:3px solid var(--purple);}
 
 <div class="overlay" id="cal-overlay" onclick="handleCalOverlayClick(event)">
   <div class="modal" style="max-width:420px">
-    <h3>📅 Crear avisos en Google Calendar</h3>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Se crearán <strong>2 avisos</strong> para <span id="cal-nombre-preview" style="color:var(--blue2)"></span>:</p>
+    <h3 style="font-family:var(--font-body);font-size:17px;font-weight:700;">📅 Crear avisos en Google Calendar</h3>
+    <p style="font-size:13px;color:var(--ink2);margin-bottom:16px;">Se crearán <strong>2 avisos</strong> para <span id="cal-nombre-preview" style="color:var(--blue2)"></span>:</p>
     <div class="cal-info"><strong>Aviso 1 — 8 días antes</strong><span id="cal-date1-preview"></span></div>
     <div class="cal-info"><strong>Aviso 2 — Sábado anterior</strong><span id="cal-date2-preview"></span></div>
     <div class="modal-footer">
@@ -309,11 +339,11 @@ function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');const ms=['ene
 function fmtDateLong(d){if(!d)return'—';return new Date(d+'T00:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});}
 function getStatus(a){
   const d=diffDays(a.fecha);
-  if(d===null)return{key:'sinfecha',label:'⚪ Sin fecha',cls:'badge-gray'};
-  if(a.lesion)return{key:'lesion',label:'🟣 Lesión',cls:'badge-injury'};
-  if(d<0)return{key:'vencido',label:'🔴 Vencido',cls:'badge-red'};
-  if(d<=7)return{key:'semana',label:'🟡 Última semana',cls:'badge-yellow'};
-  return{key:'ok',label:'🟢 Al día',cls:'badge-green'};
+  if(d===null)return{key:'sinfecha',label:'Sin fecha',cls:'badge-gray',dot:'var(--ink3)'};
+  if(a.lesion)return{key:'lesion',label:'Lesión',cls:'badge-injury',dot:'var(--purple)'};
+  if(d<0)return{key:'vencido',label:'Vencido',cls:'badge-red',dot:'var(--red)'};
+  if(d<=7)return{key:'semana',label:'Última semana',cls:'badge-yellow',dot:'var(--yellow)'};
+  return{key:'ok',label:'Al día',cls:'badge-green',dot:'var(--green)'};
 }
 
 // ── CALENDAR ──────────────────────────────────────────────────────────
@@ -373,8 +403,6 @@ function handleCalOverlayClick(e){if(e.target.id==='cal-overlay')closeCalModal()
 let alumnos=[],nextId=1,editId=null,sortByUrgency=true,pendingCalAlumno=null;
 
 // ── RENDER ────────────────────────────────────────────────────────────
-function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
-function avColor(n){return(n.charCodeAt(0)+(n.charCodeAt(n.length-1)||0))%6;}
 function updateStats(){
   document.getElementById('st-total').textContent=alumnos.length;
   document.getElementById('st-venc').textContent=alumnos.filter(a=>{const d=diffDays(a.fecha);return d!==null&&d<0&&!a.lesion;}).length;
@@ -395,22 +423,26 @@ function render(){
   if(sortByUrgency)list.sort((a,b)=>(diffDays(a.fecha)??9999)-(diffDays(b.fecha)??9999));
   updateStats();
   const tbody=document.getElementById('tbody');
-  if(!list.length){tbody.innerHTML=`<tr><td colspan="8" class="empty"><div class="empty-icon">🏋️</div>No hay alumnos que coincidan</td></tr>`;return;}
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="7" class="empty"><div class="empty-icon">🏋️</div>No hay alumnos que coincidan</td></tr>`;return;}
   tbody.innerHTML=list.map(a=>{
     const st=getStatus(a);
     const d=diffDays(a.fecha);
-    const daysColor=d===null?'gray':d<0?'red':d<=7?'yellow':'green';
-    const daysText=d===null?'—':d<0?`${Math.abs(d)}d pasado`:`${d}d`;
     const synced=a.calSynced&&a.calSynced===a.fecha;
-    return`<tr class="${a.lesion?'lesion-row':''}">
-      <td><div class="name-cell"><div class="avatar av${avColor(a.nombre)}">${initials(a.nombre)}</div><div><span class="name-text">${a.nombre}${a.lesion?'<span class="injury-tag">LESIÓN</span>':''}</span></div></div></td>
-      <td class="hide-mobile"><span class="modal-tag ${a.modal==='Online'?'tag-online':'tag-pres'}">${a.modal}</span></td>
-      <td><span class="date-text">${fmtDate(a.fecha)}</span></td>
-      <td class="hide-mobile"><span class="days-num ${daysColor}">${daysText}</span></td>
-      <td><span class="badge ${st.cls}">${st.label}</span></td>
-      <td class="hide-mobile"><select class="manual-sel" onchange="updateManual(${a.id},this.value)">${['📝 Sin definir','✅ Entregado','⏳ En proceso','❌ Pendiente'].map(op=>`<option${a.manual===op?' selected':''}>${op}</option>`).join('')}</select></td>
-      <td class="hide-mobile" style="max-width:160px;color:var(--text2);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.notas||''}">${a.notas||'<span style="color:var(--text3)">—</span>'}</td>
-      <td><div class="actions">
+    let fillPct,fillCls,daysTxt;
+    if(d===null){fillPct=0;fillCls='';daysTxt='—';}
+    else if(d<0){fillPct=100;fillCls='red';daysTxt=`+${Math.abs(d)}d`;}
+    else{fillPct=Math.min(d,30)/30*100;fillCls=d<=7?'yellow':'green';daysTxt=`${d}d`;}
+    return`<tr class="rowline" style="--stripe:${st.dot}">
+      <td><div class="cell">
+        <span class="name-text">${a.nombre}${a.lesion?'<span class="injury-tag">LESIÓN</span>':''}</span>
+        ${a.notas?`<div class="athlete-note" title="${a.notas}">${a.notas}</div>`:''}
+      </div></td>
+      <td class="hide-mobile"><div class="cell"><span class="modal-tag ${a.modal==='Online'?'tag-online':'tag-pres'}">${a.modal}</span></div></td>
+      <td><div class="cell"><span class="date-text">${fmtDate(a.fecha)}</span></div></td>
+      <td class="hide-mobile"><div class="cell urgency"><div class="utrack${d===null?' empty':''}">${d===null?'':`<div class="ufill ${fillCls}" style="width:${fillPct}%"></div>`}</div><span class="days-num">${daysTxt}</span></div></td>
+      <td><div class="cell"><span class="badge ${st.cls}"><span class="sdot" style="background:${st.dot}"></span>${st.label}</span></div></td>
+      <td class="hide-mobile"><div class="cell"><select class="manual-sel" onchange="updateManual(${a.id},this.value)">${['📝 Sin definir','✅ Entregado','⏳ En proceso','❌ Pendiente'].map(op=>`<option${a.manual===op?' selected':''}>${op}</option>`).join('')}</select></div></td>
+      <td><div class="cell actions">
         <button class="icon-btn cal${synced?' synced':''}" title="${synced?'Avisos ya creados':'Crear avisos en Calendar'}" onclick="requestCalendar(${a.id})">
           <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         </button>
