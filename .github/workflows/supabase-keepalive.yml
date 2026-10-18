@@ -1,0 +1,31 @@
+name: Mantener despierta la base de Supabase
+
+# Supabase pausa los proyectos del plan gratis después de ~7 días sin
+# actividad. Este workflow hace una consulta real a la base dos veces por
+# semana (mucho antes de llegar a ese límite) para que nunca se pause sola.
+on:
+  schedule:
+    - cron: '0 12 * * 1,4' # lunes y jueves 12:00 UTC (09:00 Argentina)
+  workflow_dispatch: {} # permite dispararlo a mano desde la pestaña "Actions"
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar la tabla de alumnos
+        env:
+          SUPABASE_URL: https://czhkhmexmfoqijczaauf.supabase.co
+          # Es la misma clave "anon" pública que ya viaja en index.html,
+          # no es un secreto, por eso no hace falta guardarla aparte.
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6aGtobWV4bWZvcWlqY3phYXVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NzI4ODgsImV4cCI6MjA5ODM0ODg4OH0.PKM93io5PhuzN-3xltGyE_kHMZQufEoe8furKxn93a4
+        run: |
+          status=$(curl -sS -o /tmp/response.json -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/vbp_atletas?select=id&limit=1")
+          echo "HTTP $status"
+          cat /tmp/response.json
+          if [ "$status" -ge 400 ]; then
+            echo "::error::Supabase respondió $status — el proyecto puede estar pausado o la clave cambió."
+            exit 1
+          fi
